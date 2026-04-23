@@ -6,8 +6,6 @@ const fileInput      = document.getElementById('file-input');
 const previewImg     = document.getElementById('preview-img');
 const dzIdle         = document.getElementById('dz-idle');
 const btnConvert     = document.getElementById('btn-convert');
-const btnCamera      = document.getElementById('btn-camera');
-const cameraInput    = document.getElementById('camera-input');
 const btnClear       = document.getElementById('btn-clear');
 const btnCopy        = document.getElementById('btn-copy');
 const btnRerender    = document.getElementById('btn-rerender');
@@ -120,11 +118,6 @@ dropZone.addEventListener('drop', e => {
 
 fileInput.addEventListener('change', () => {
   if (fileInput.files[0]) loadFile(fileInput.files[0]);
-});
-
-btnCamera.addEventListener('click', () => cameraInput.click());
-cameraInput.addEventListener('change', () => {
-  if (cameraInput.files[0]) loadFile(cameraInput.files[0]);
 });
 
 // Keyboard accessibility
