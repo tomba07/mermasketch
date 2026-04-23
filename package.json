@@ -1,0 +1,13 @@
+{
+  "name": "mermasketch",
+  "version": "1.0.0",
+  "description": "Convert architecture sketches to Mermaid diagrams using OpenAI gpt-4o",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file=.env --watch server.js"
+  },
+  "dependencies": {
+    "openai": "^4.0.0"
+  }
+}
