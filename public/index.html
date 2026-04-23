@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MermaSketch</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>MermaSketch</h1>
+    <p class="tagline">Upload a whiteboard sketch — get Mermaid diagram code</p>
+  </header>
+
+  <main>
+    <!-- ── Left panel: upload ──────────────────────────────────────── -->
+    <section class="panel panel-upload">
+
+      <div class="drop-zone" id="drop-zone" role="button" tabindex="0"
+           aria-label="Upload sketch image">
+        <input type="file" id="file-input" accept="image/*" aria-hidden="true" />
+        <div class="drop-zone__idle" id="dz-idle">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p>Drag &amp; drop or <span class="link-text">click to upload</span></p>
+          <p class="hint">JPEG, PNG, GIF, WEBP &middot; max 5 MB</p>
+        </div>
+        <img id="preview-img" alt="Uploaded sketch preview" hidden />
+      </div>
+
+      <div class="upload-actions">
+        <button id="btn-convert" class="btn btn-primary" disabled>Convert</button>
+        <button id="btn-camera"  class="btn btn-ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8
+                     a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          Take Photo
+        </button>
+        <input type="file" id="camera-input" accept="image/*" capture="environment"
+               aria-hidden="true" style="display:none" />
+        <button id="btn-clear" class="btn btn-ghost" hidden>Clear</button>
+      </div>
+
+      <div id="error-box" class="error-box" hidden role="alert" aria-live="assertive"></div>
+
+    </section>
+
+    <!-- ── Right panel: output ────────────────────────────────────── -->
+    <section class="panel panel-output">
+
+      <div class="output-header">
+        <span class="output-label">Mermaid code</span>
+        <button id="btn-copy" class="btn btn-ghost btn-small" disabled>Copy</button>
+      </div>
+
+      <textarea id="mermaid-code"
+                class="code-area"
+                placeholder="Mermaid code will appear here after conversion…"
+                spellcheck="false"
+                aria-label="Mermaid diagram code"></textarea>
+
+      <div class="preview-header">
+        <span class="output-label">Diagram preview</span>
+        <button id="btn-rerender" class="btn btn-ghost btn-small" hidden>Re-render</button>
+      </div>
+
+      <div id="diagram-preview" class="diagram-preview">
+        <p class="placeholder-text">Preview will appear here</p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay" class="loading-overlay" hidden aria-live="polite">
+    <div class="spinner"></div>
+    <p>Analyzing sketch…</p>
+  </div>
+
+  <!-- Mermaid from CDN (ESM) — attached to window for app.js -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+    window.__mermaid = mermaid;
+  </script>
+  <script src="app.js" defer></script>
+
+</body>
+</html>

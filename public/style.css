@@ -1,0 +1,240 @@
+/* ── Reset / base ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+:root {
+  --color-bg       : #f5f5f7;
+  --color-surface  : #ffffff;
+  --color-border   : #d1d1d6;
+  --color-primary  : #0071e3;
+  --color-primary-h: #0077ed;
+  --color-danger   : #d93025;
+  --color-text     : #1d1d1f;
+  --color-muted    : #6e6e73;
+  --radius         : 12px;
+  --shadow         : 0 2px 12px rgba(0,0,0,.08);
+  --transition     : 0.18s ease;
+}
+
+body {
+  font-family   : -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size     : 15px;
+  background    : var(--color-bg);
+  color         : var(--color-text);
+  min-height    : 100dvh;
+  display       : flex;
+  flex-direction: column;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+header {
+  text-align : center;
+  padding    : 2.5rem 1rem 1.5rem;
+}
+
+header h1 {
+  font-size     : 2rem;
+  font-weight   : 700;
+  letter-spacing: -0.03em;
+}
+
+.tagline {
+  color     : var(--color-muted);
+  margin-top: 0.4rem;
+}
+
+/* ── Main layout ─────────────────────────────────────────────────────── */
+main {
+  display              : grid;
+  grid-template-columns: 1fr 1fr;
+  gap                  : 1.25rem;
+  flex                 : 1;
+  max-width            : 1400px;
+  width                : 100%;
+  margin               : 0 auto;
+  padding              : 0 1.25rem 2rem;
+}
+
+@media (max-width: 820px) {
+  main { grid-template-columns: 1fr; }
+}
+
+/* ── Panels ──────────────────────────────────────────────────────────── */
+.panel {
+  background    : var(--color-surface);
+  border-radius : var(--radius);
+  box-shadow    : var(--shadow);
+  padding       : 1.25rem;
+  display       : flex;
+  flex-direction: column;
+  gap           : 1rem;
+}
+
+/* ── Drop zone ───────────────────────────────────────────────────────── */
+.drop-zone {
+  border         : 2px dashed var(--color-border);
+  border-radius  : calc(var(--radius) - 2px);
+  cursor         : pointer;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  min-height     : 240px;
+  transition     : border-color var(--transition), background var(--transition);
+  overflow       : hidden;
+  position       : relative;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--color-primary);
+  background  : #f0f7ff;
+}
+
+.drop-zone input[type="file"] {
+  position: absolute;
+  inset   : 0;
+  opacity : 0;
+  cursor  : pointer;
+  width   : 100%;
+  height  : 100%;
+}
+
+.drop-zone__idle {
+  display       : flex;
+  flex-direction: column;
+  align-items   : center;
+  gap           : 0.5rem;
+  color         : var(--color-muted);
+  pointer-events: none;
+}
+
+.drop-zone__idle svg { color: var(--color-primary); opacity: 0.7; }
+.link-text { color: var(--color-primary); font-weight: 500; }
+.hint { font-size: 0.82rem; }
+
+#preview-img {
+  max-width    : 100%;
+  max-height   : 420px;
+  object-fit   : contain;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+.btn {
+  display    : inline-flex;
+  align-items: center;
+  gap        : 0.4rem;
+  padding    : 0.55rem 1.2rem;
+  border-radius: 8px;
+  border     : none;
+  cursor     : pointer;
+  font-size  : 0.9rem;
+  font-weight: 500;
+  transition : background var(--transition), opacity var(--transition);
+}
+
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:not(:disabled):hover { background: var(--color-primary-h); }
+
+.btn-ghost {
+  background: transparent;
+  color     : var(--color-primary);
+  border    : 1.5px solid var(--color-border);
+}
+.btn-ghost:not(:disabled):hover { background: #f0f7ff; border-color: var(--color-primary); }
+
+.btn-small { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+
+.upload-actions { display: flex; gap: 0.75rem; }
+
+/* ── Error box ───────────────────────────────────────────────────────── */
+.error-box {
+  background   : #fff0f0;
+  border       : 1px solid #ffc5c5;
+  border-radius: 8px;
+  color        : var(--color-danger);
+  font-size    : 0.875rem;
+  padding      : 0.75rem 1rem;
+}
+
+/* ── Output panel ────────────────────────────────────────────────────── */
+.output-header,
+.preview-header {
+  display        : flex;
+  align-items    : center;
+  justify-content: space-between;
+}
+
+.output-label {
+  font-weight   : 600;
+  font-size     : 0.8rem;
+  color         : var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-area {
+  font-family : 'Menlo', 'Consolas', 'Liberation Mono', monospace;
+  font-size   : 0.82rem;
+  line-height : 1.55;
+  border      : 1px solid var(--color-border);
+  border-radius: 8px;
+  padding     : 0.75rem;
+  resize      : vertical;
+  min-height  : 180px;
+  background  : #fafafa;
+  color       : var(--color-text);
+  transition  : border-color var(--transition);
+  width       : 100%;
+}
+
+.code-area:focus {
+  outline     : none;
+  border-color: var(--color-primary);
+  background  : var(--color-surface);
+}
+
+/* ── Diagram preview ─────────────────────────────────────────────────── */
+.diagram-preview {
+  border         : 1px solid var(--color-border);
+  border-radius  : 8px;
+  min-height     : 200px;
+  padding        : 1rem;
+  overflow       : auto;
+  background     : var(--color-surface);
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+}
+
+.diagram-preview svg { max-width: 100%; height: auto; }
+
+.placeholder-text { color: var(--color-muted); font-size: 0.875rem; }
+
+/* ── Loading overlay ─────────────────────────────────────────────────── */
+.loading-overlay {
+  position       : fixed;
+  inset          : 0;
+  background     : rgba(255,255,255,0.75);
+  backdrop-filter: blur(4px);
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  justify-content: center;
+  gap            : 1rem;
+  z-index        : 100;
+  font-weight    : 500;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+  width        : 44px;
+  height       : 44px;
+  border       : 3.5px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation    : spin 0.75s linear infinite;
+}
