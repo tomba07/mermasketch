@@ -50,10 +50,22 @@ Rules:
    - graph               →  network topology, infra maps with no clear direction
    - erDiagram           →  entity-relationship / data models
    - stateDiagram-v2     →  state machines
-3. Preserve the intent and labels visible in the sketch as closely as possible; clean up obvious spelling errors.
-4. If the sketch is ambiguous, produce the most reasonable interpretation as a flowchart TD.
-5. Every node label must be valid Mermaid syntax — wrap labels with special characters in quotes.
-6. Never truncate the output; always produce the full diagram.
+3. Preserve the visual semantics of the sketch:
+   - rounded rectangles → A(Label)
+   - rectangles         → A[Label]
+   - circles / ovals    → A((Label))
+   - database cylinders → A[(Label)]
+   - diamonds           → A{Label}
+4. Preserve arrow semantics:
+   - one-way arrows     → A --> B
+   - bidirectional      → A <--> B
+   - undirected lines   → A --- B
+   - dashed lines       → A -.-> B or A -.- B
+   - thick arrows       → A ==> B
+5. Preserve the intent and labels visible in the sketch as closely as possible; clean up obvious spelling errors.
+6. If the sketch is ambiguous, produce the most reasonable interpretation as a flowchart TD.
+7. Every node label must be valid Mermaid syntax — wrap labels with special characters in quotes.
+8. Never truncate the output; always produce the full diagram.
 
 Output format (strictly):
 \`\`\`mermaid
