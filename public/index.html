@@ -33,6 +33,23 @@
         <img id="preview-img" alt="Uploaded sketch preview" hidden />
       </div>
 
+      <label class="field-label" for="diagram-type">Diagram type</label>
+      <select id="diagram-type" class="select-control">
+        <option value="auto">Auto</option>
+        <option value="flowchart">Flowchart</option>
+        <option value="sequenceDiagram">Sequence diagram</option>
+        <option value="classDiagram">Class diagram</option>
+        <option value="stateDiagram-v2">State diagram</option>
+        <option value="erDiagram">ER diagram</option>
+        <option value="gantt">Gantt chart</option>
+        <option value="journey">User journey</option>
+        <option value="pie">Pie chart</option>
+        <option value="quadrantChart">Quadrant chart</option>
+        <option value="timeline">Timeline</option>
+        <option value="mindmap">Mind map</option>
+        <option value="gitGraph">Git graph</option>
+      </select>
+
       <div class="upload-actions">
         <button id="btn-convert" class="btn btn-primary" disabled>Convert</button>
         <button id="btn-clear" class="btn btn-ghost" hidden>Clear</button>

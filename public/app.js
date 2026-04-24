@@ -13,6 +13,7 @@ const errorBox       = document.getElementById('error-box');
 const loadingOverlay = document.getElementById('loading-overlay');
 const mermaidCode    = document.getElementById('mermaid-code');
 const diagramPreview = document.getElementById('diagram-preview');
+const diagramType    = document.getElementById('diagram-type');
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let currentFile = null;
@@ -142,7 +143,7 @@ btnConvert.addEventListener('click', async () => {
     const res = await fetch('/convert', {
       method : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ imageBase64: base64, mimeType }),
+      body   : JSON.stringify({ imageBase64: base64, mimeType, diagramType: diagramType.value }),
     });
 
     const data = await res.json();

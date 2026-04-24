@@ -149,6 +149,32 @@ main {
 
 .upload-actions { display: flex; gap: 0.75rem; }
 
+.field-label {
+  font-weight   : 600;
+  font-size     : 0.8rem;
+  color         : var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.select-control {
+  width        : 100%;
+  min-height   : 42px;
+  border       : 1px solid var(--color-border);
+  border-radius: 8px;
+  background   : var(--color-surface);
+  color        : var(--color-text);
+  font-size    : 0.95rem;
+  padding      : 0.55rem 0.75rem;
+  transition   : border-color var(--transition), background var(--transition);
+}
+
+.select-control:focus {
+  outline     : none;
+  border-color: var(--color-primary);
+  background  : #f0f7ff;
+}
+
 /* ── Error box ───────────────────────────────────────────────────────── */
 .error-box {
   background   : #fff0f0;

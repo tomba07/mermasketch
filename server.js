@@ -60,6 +60,22 @@ Output format (strictly):
 <diagram content here>
 \`\`\``;
 
+const DIAGRAM_TYPES = {
+  auto: 'choose the most appropriate Mermaid diagram type for the sketch',
+  flowchart: 'use a Mermaid flowchart, choosing TD or LR based on the sketch direction',
+  sequenceDiagram: 'use Mermaid sequenceDiagram syntax',
+  classDiagram: 'use Mermaid classDiagram syntax',
+  'stateDiagram-v2': 'use Mermaid stateDiagram-v2 syntax',
+  erDiagram: 'use Mermaid erDiagram syntax',
+  gantt: 'use Mermaid gantt syntax',
+  journey: 'use Mermaid journey syntax',
+  pie: 'use Mermaid pie syntax',
+  quadrantChart: 'use Mermaid quadrantChart syntax',
+  timeline: 'use Mermaid timeline syntax',
+  mindmap: 'use Mermaid mindmap syntax',
+  gitGraph: 'use Mermaid gitGraph syntax',
+};
+
 // ── Helper: read request body ─────────────────────────────────────────────────
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -94,10 +110,15 @@ async function handleConvert(req, res) {
   }
 
   const { imageBase64, mimeType } = body;
+  const requestedDiagramType = typeof body.diagramType === 'string' ? body.diagramType : 'auto';
+  const diagramInstruction   = DIAGRAM_TYPES[requestedDiagramType];
 
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
   if (!imageBase64 || typeof imageBase64 !== 'string') {
     return sendJSON(res, 400, { error: 'imageBase64 is required' });
+  }
+  if (!diagramInstruction) {
+    return sendJSON(res, 400, { error: 'Unsupported Mermaid diagram type.' });
   }
   if (!ALLOWED_TYPES.includes(mimeType)) {
     return sendJSON(res, 400, { error: `Unsupported image type: ${mimeType}. Use JPEG, PNG, GIF, or WEBP.` });
@@ -125,7 +146,7 @@ async function handleConvert(req, res) {
             },
             {
               type: 'text',
-              text: 'Convert this sketch to Mermaid diagram syntax. Output only the fenced mermaid code block.',
+              text: `Convert this sketch to Mermaid diagram syntax. Diagram type preference: ${diagramInstruction}. Output only the fenced mermaid code block.`,
             },
           ],
         },
