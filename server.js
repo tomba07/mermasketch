@@ -17,6 +17,7 @@ if (fs.existsSync(envFile)) {
 const PORT    = process.env.PORT || 3000;
 const API_KEY = process.env.OPENAI_API_KEY;
 const PUBLIC  = path.join(__dirname, 'public');
+const MODEL   = process.env.OPENAI_MODEL || 'gpt-5.4-mini';
 
 if (!API_KEY) {
   console.error('ERROR: OPENAI_API_KEY environment variable is not set.');
@@ -51,21 +52,41 @@ Rules:
    - erDiagram           →  entity-relationship / data models
    - stateDiagram-v2     →  state machines
 3. Preserve the visual semantics of the sketch:
-   - rounded rectangles → A(Label)
-   - rectangles         → A[Label]
-   - circles / ovals    → A((Label))
-   - database cylinders → A[(Label)]
-   - diamonds           → A{Label}
+   - rounded rectangles → frontend("Frontend")
+   - rectangles         → frontend["Frontend"]
+   - circles / ovals    → db(("DB"))
+   - database cylinders → db[("DB")]
+   - diamonds           → decision{"Decision?"}
 4. Preserve arrow semantics:
-   - one-way arrows     → A --> B
-   - bidirectional      → A <--> B
-   - undirected lines   → A --- B
-   - dashed lines       → A -.-> B or A -.- B
-   - thick arrows       → A ==> B
-5. Preserve the intent and labels visible in the sketch as closely as possible; clean up obvious spelling errors.
-6. If the sketch is ambiguous, produce the most reasonable interpretation as a flowchart TD.
-7. Every node label must be valid Mermaid syntax — wrap labels with special characters in quotes.
-8. Never truncate the output; always produce the full diagram.
+   - one-way arrows     → frontend --> backend
+   - bidirectional      → frontend <--> backend
+   - undirected lines   → frontend --- backend
+   - dashed lines       → frontend -.-> backend or frontend -.- backend
+   - thick arrows       → frontend ==> backend
+   - If both connector ends visibly have arrowheads, always use <-->.
+   - Do not infer arrow direction from the node layout, hierarchy, or reading order; use only the visible arrowheads.
+   - If one arrowhead is unclear but the line appears symmetric between architecture components, prefer <--> over -->.
+5. Use safe Mermaid node IDs and separate them from visible labels:
+   - IDs must start with a letter and contain only letters, numbers, and underscores.
+   - Never use a raw label as an ID if it starts with a number or contains spaces, punctuation, or quotes.
+   - For labels such as "3PL", define a safe node like three_pl["3PL"], then connect three_pl.
+   - Define each shaped node once, then use only its ID in edges.
+6. Preserve the intent and labels visible in the sketch as closely as possible; clean up obvious spelling errors.
+7. If the sketch is ambiguous, produce the most reasonable interpretation as a flowchart TD.
+8. Every node label must be valid Mermaid syntax — wrap labels with special characters in quotes.
+9. Never truncate the output; always produce the full diagram.
+
+Flowchart syntax example:
+\`\`\`mermaid
+flowchart TD
+  frontend("Frontend")
+  backend("Backend")
+  db(("DB"))
+  three_pl["3PL"]
+  frontend <--> backend
+  backend <--> db
+  backend --> three_pl
+\`\`\`
 
 Output format (strictly):
 \`\`\`mermaid
@@ -141,23 +162,22 @@ async function handleConvert(req, res) {
   }
 
   try {
-    const response = await client.chat.completions.create({
-      model     : 'gpt-4o',
-      max_tokens: 4096,
-      messages  : [
-        { role: 'system', content: SYSTEM_PROMPT },
+    const response = await client.responses.create({
+      model            : MODEL,
+      instructions     : SYSTEM_PROMPT,
+      max_output_tokens: 4096,
+      reasoning        : { effort: 'high' },
+      input            : [
         {
           role   : 'user',
           content: [
             {
-              type     : 'image_url',
-              image_url: {
-                url   : `data:${mimeType};base64,${imageBase64}`,
-                detail: 'high',
-              },
+              type     : 'input_image',
+              image_url: `data:${mimeType};base64,${imageBase64}`,
+              detail   : 'high',
             },
             {
-              type: 'text',
+              type: 'input_text',
               text: `Convert this sketch to Mermaid diagram syntax. Diagram type preference: ${diagramInstruction}. Output only the fenced mermaid code block.`,
             },
           ],
@@ -165,7 +185,7 @@ async function handleConvert(req, res) {
       ],
     });
 
-    const rawText = response.choices[0].message.content ?? '';
+    const rawText = response.output_text ?? '';
     const match   = rawText.match(/```mermaid\s*([\s\S]*?)\s*```/);
     const mermaid = match ? match[1].trim() : rawText.trim();
 

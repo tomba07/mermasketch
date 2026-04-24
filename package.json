@@ -1,7 +1,7 @@
 {
   "name": "mermasketch",
   "version": "1.0.0",
-  "description": "Convert architecture sketches to Mermaid diagrams using OpenAI gpt-4o",
+  "description": "Convert architecture sketches to Mermaid diagrams using OpenAI gpt-5.4-mini",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
